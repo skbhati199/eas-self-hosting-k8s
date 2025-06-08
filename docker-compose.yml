@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  eas-server:
+    image: expo/eas-server:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://eas_user:eas_password@postgres:5432/eas_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-jwt-secret-here
+      - EXPO_API_KEY=your-expo-api-key
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=eas_db
+      - POSTGRES_USER=eas_user
+      - POSTGRES_PASSWORD=eas_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  eas-worker:
+    image: expo/eas-server:latest
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://eas_user:eas_password@postgres:5432/eas_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your-jwt-secret-here
+      - EXPO_API_KEY=your-expo-api-key
+      - WORKER_MODE=true
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+
+volumes:
+  postgres_data:
+  redis_data:
+
