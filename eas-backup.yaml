@@ -1,0 +1,709 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-06-08T16:41:27Z"
+    generateName: postgres-6dc5d59f4b-
+    labels:
+      app: postgres
+      pod-template-hash: 6dc5d59f4b
+    name: postgres-6dc5d59f4b-9pxwz
+    namespace: eas-self-hosting
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: postgres-6dc5d59f4b
+      uid: 6d1a3376-f517-400f-a748-869be546c338
+    resourceVersion: "1622"
+    uid: 46ed1f11-8c57-4269-bc95-43839db073ca
+  spec:
+    containers:
+    - env:
+      - name: POSTGRES_DB
+        valueFrom:
+          configMapKeyRef:
+            key: POSTGRES_DB
+            name: eas-config
+      - name: POSTGRES_USER
+        valueFrom:
+          configMapKeyRef:
+            key: POSTGRES_USER
+            name: eas-config
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: POSTGRES_PASSWORD
+            name: eas-secrets
+      image: postgres:14
+      imagePullPolicy: IfNotPresent
+      name: postgres
+      ports:
+      - containerPort: 5432
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/lib/postgresql/data
+        name: postgres-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9th7w
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: docker-desktop
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: postgres-storage
+      persistentVolumeClaim:
+        claimName: postgres-pvc
+    - name: kube-api-access-9th7w
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:04Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:41:28Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:04Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:04Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:41:28Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: docker://c11c082b9dad5929e6312adbb78138fba7935da83e4bd0c7059f37787e14628f
+      image: postgres:14
+      imageID: docker-pullable://postgres@sha256:bbcaba1d74865ee6d6318b5e297d0df73d1f6b6d995cd892b60a2cf1440b716a
+      lastState: {}
+      name: postgres
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-08T16:42:03Z"
+      volumeMounts:
+      - mountPath: /var/lib/postgresql/data
+        name: postgres-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-9th7w
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 192.168.65.3
+    hostIPs:
+    - ip: 192.168.65.3
+    phase: Running
+    podIP: 10.1.0.101
+    podIPs:
+    - ip: 10.1.0.101
+    qosClass: Burstable
+    startTime: "2025-06-08T16:41:28Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-06-08T16:41:36Z"
+    generateName: redis-684f879976-
+    labels:
+      app: redis
+      pod-template-hash: 684f879976
+    name: redis-684f879976-k8c58
+    namespace: eas-self-hosting
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: redis-684f879976
+      uid: 25fa444c-7e0d-470f-af28-f2f17e1941fd
+    resourceVersion: "1643"
+    uid: 42bfb1d1-7a9f-4b70-bb15-e76276d76374
+  spec:
+    containers:
+    - image: redis:7-alpine
+      imagePullPolicy: IfNotPresent
+      name: redis
+      ports:
+      - containerPort: 6379
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 200m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /data
+        name: redis-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-ttzq5
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: docker-desktop
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: redis-storage
+      persistentVolumeClaim:
+        claimName: redis-pvc
+    - name: kube-api-access-ttzq5
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:16Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:41:37Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:16Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:42:16Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-08T16:41:37Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: docker://dd580127adbc53ec287f5d7873c7e0cd332d388be702aa3cd318da53c257e47a
+      image: redis:7-alpine
+      imageID: docker-pullable://redis@sha256:ee9e8748ace004102a267f7b8265dab2c618317df22507b89d16a8add7154273
+      lastState: {}
+      name: redis
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-08T16:42:14Z"
+      volumeMounts:
+      - mountPath: /data
+        name: redis-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-ttzq5
+        readOnly: true
+        recursiveReadOnly: Disabled
+    hostIP: 192.168.65.3
+    hostIPs:
+    - ip: 192.168.65.3
+    phase: Running
+    podIP: 10.1.0.102
+    podIPs:
+    - ip: 10.1.0.102
+    qosClass: Burstable
+    startTime: "2025-06-08T16:41:37Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"eas-server","namespace":"eas-self-hosting"},"spec":{"ports":[{"port":3000,"targetPort":3000}],"selector":{"app":"eas-server"},"type":"LoadBalancer"}}
+    creationTimestamp: "2025-06-08T16:42:21Z"
+    name: eas-server
+    namespace: eas-self-hosting
+    resourceVersion: "1685"
+    uid: 1c9273e0-b4a0-4dbf-a7f7-dfe656bcd2a9
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.100.74.222
+    clusterIPs:
+    - 10.100.74.222
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - nodePort: 32675
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+    selector:
+      app: eas-server
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - hostname: localhost
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"postgres","namespace":"eas-self-hosting"},"spec":{"ports":[{"port":5432,"targetPort":5432}],"selector":{"app":"postgres"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-06-08T16:41:27Z"
+    name: postgres
+    namespace: eas-self-hosting
+    resourceVersion: "1525"
+    uid: 558a96cf-449c-4b63-a779-11af18727bff
+  spec:
+    clusterIP: 10.101.172.218
+    clusterIPs:
+    - 10.101.172.218
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      app: postgres
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"redis","namespace":"eas-self-hosting"},"spec":{"ports":[{"port":6379,"targetPort":6379}],"selector":{"app":"redis"},"type":"ClusterIP"}}
+    creationTimestamp: "2025-06-08T16:41:36Z"
+    name: redis
+    namespace: eas-self-hosting
+    resourceVersion: "1570"
+    uid: 634789a0-b06f-410e-bc44-3782f449c12e
+  spec:
+    clusterIP: 10.101.80.151
+    clusterIPs:
+    - 10.101.80.151
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 6379
+      protocol: TCP
+      targetPort: 6379
+    selector:
+      app: redis
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"postgres","namespace":"eas-self-hosting"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"postgres"}},"template":{"metadata":{"labels":{"app":"postgres"}},"spec":{"containers":[{"env":[{"name":"POSTGRES_DB","valueFrom":{"configMapKeyRef":{"key":"POSTGRES_DB","name":"eas-config"}}},{"name":"POSTGRES_USER","valueFrom":{"configMapKeyRef":{"key":"POSTGRES_USER","name":"eas-config"}}},{"name":"POSTGRES_PASSWORD","valueFrom":{"secretKeyRef":{"key":"POSTGRES_PASSWORD","name":"eas-secrets"}}}],"image":"postgres:14","name":"postgres","ports":[{"containerPort":5432}],"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"250m","memory":"256Mi"}},"volumeMounts":[{"mountPath":"/var/lib/postgresql/data","name":"postgres-storage"}]}],"volumes":[{"name":"postgres-storage","persistentVolumeClaim":{"claimName":"postgres-pvc"}}]}}}}
+    creationTimestamp: "2025-06-08T16:41:27Z"
+    generation: 1
+    name: postgres
+    namespace: eas-self-hosting
+    resourceVersion: "1626"
+    uid: 19fa7d10-1653-458b-a1d5-ca7043a13224
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: postgres
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: postgres
+      spec:
+        containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                key: POSTGRES_DB
+                name: eas-config
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                key: POSTGRES_USER
+                name: eas-config
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: eas-secrets
+          image: postgres:14
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgres-storage
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-06-08T16:42:04Z"
+      lastUpdateTime: "2025-06-08T16:42:04Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-06-08T16:41:27Z"
+      lastUpdateTime: "2025-06-08T16:42:04Z"
+      message: ReplicaSet "postgres-6dc5d59f4b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"redis","namespace":"eas-self-hosting"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"redis"}},"template":{"metadata":{"labels":{"app":"redis"}},"spec":{"containers":[{"image":"redis:7-alpine","name":"redis","ports":[{"containerPort":6379}],"resources":{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"128Mi"}},"volumeMounts":[{"mountPath":"/data","name":"redis-storage"}]}],"volumes":[{"name":"redis-storage","persistentVolumeClaim":{"claimName":"redis-pvc"}}]}}}}
+    creationTimestamp: "2025-06-08T16:41:35Z"
+    generation: 1
+    name: redis
+    namespace: eas-self-hosting
+    resourceVersion: "1647"
+    uid: 10cab9cf-169a-482e-bd76-355a63ce52b7
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: redis
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: redis
+      spec:
+        containers:
+        - image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: redis-storage
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-06-08T16:42:16Z"
+      lastUpdateTime: "2025-06-08T16:42:16Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2025-06-08T16:41:36Z"
+      lastUpdateTime: "2025-06-08T16:42:16Z"
+      message: ReplicaSet "redis-684f879976" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-06-08T16:41:27Z"
+    generation: 1
+    labels:
+      app: postgres
+      pod-template-hash: 6dc5d59f4b
+    name: postgres-6dc5d59f4b
+    namespace: eas-self-hosting
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: postgres
+      uid: 19fa7d10-1653-458b-a1d5-ca7043a13224
+    resourceVersion: "1625"
+    uid: 6d1a3376-f517-400f-a748-869be546c338
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: postgres
+        pod-template-hash: 6dc5d59f4b
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: postgres
+          pod-template-hash: 6dc5d59f4b
+      spec:
+        containers:
+        - env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                key: POSTGRES_DB
+                name: eas-config
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                key: POSTGRES_USER
+                name: eas-config
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: eas-secrets
+          image: postgres:14
+          imagePullPolicy: IfNotPresent
+          name: postgres
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgres-storage
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2025-06-08T16:41:36Z"
+    generation: 1
+    labels:
+      app: redis
+      pod-template-hash: 684f879976
+    name: redis-684f879976
+    namespace: eas-self-hosting
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: redis
+      uid: 10cab9cf-169a-482e-bd76-355a63ce52b7
+    resourceVersion: "1646"
+    uid: 25fa444c-7e0d-470f-af28-f2f17e1941fd
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: redis
+        pod-template-hash: 684f879976
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: redis
+          pod-template-hash: 684f879976
+      spec:
+        containers:
+        - image: redis:7-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis
+          ports:
+          - containerPort: 6379
+            protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /data
+            name: redis-storage
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
